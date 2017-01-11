@@ -196,7 +196,7 @@ begin
   //SendLog('XInputSetState '+IntToStr(dwUserIndex));
 
   //Temporary solution
-  if (pVibration.wLeftMotorSpeed<>0) and (pVibration.wRightMotorSpeed<>0) then
+  //if (pVibration.wLeftMotorSpeed<>0) and (pVibration.wRightMotorSpeed<>0) then
   //Send vibration true or false to other devices
   //SendLog('Motor L='+IntToStr(pVibration.wLeftMotorSpeed)+' R='+IntToStr(pVibration.wRightMotorSpeed)); //incorrect data
   if dwUserIndex=0 then Result:=ERROR_SUCCESS
