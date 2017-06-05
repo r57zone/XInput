@@ -1,7 +1,12 @@
 library Project1;
 
+{
+https://github.com/r57zone/XInput
+https://r57zone.github.io
+}
+
 uses
-  Windows; //, Messages, SysUtils, Forms;
+  Windows, Messages, SysUtils, Forms;
 
 {$R *.res}
 
@@ -61,8 +66,8 @@ const
 
   PXInputVibration = ^TXInputVibration;
   _XINPUT_VIBRATION = record
-    wLeftMotorSpeed:  integer; //dword is problem, type?
-    wRightMotorSpeed: integer; //dword is problem, type?
+    wLeftMotorSpeed:  word; //incorrect data
+    wRightMotorSpeed: word; //incorrect data
   end;
   XINPUT_VIBRATION = _XINPUT_VIBRATION;
   TXInputVibration = _XINPUT_VIBRATION;
@@ -98,17 +103,17 @@ const
   TXInputKeystroke = _XINPUT_KEYSTROKE;
 
 //Example https://github.com/r57zone/Standard-modular-program
-{function SendLog(str:string):boolean;
+function SendLog(str:string): boolean;
 var
   CDS: TCopyDataStruct;
 begin
   CDS.dwData:=0;
   CDS.cbData:=(length(str)+ 1)*sizeof(char);
   CDS.lpData:=PChar(str);
-  SendMessage(FindWindow(nil, 'Show Xinput'),WM_COPYDATA, Integer(Application.Handle), Integer(@CDS));
-end;}
+  SendMessage(FindWindow(nil, 'Show Xinput'), WM_COPYDATA, Integer(Application.Handle), Integer(@CDS));
+end;
 
-function DllMain(inst:LongWord; reason:DWORD; const reserved): boolean;
+function DllMain(Inst: LongWord; Reason: DWORD; const Reserved): boolean;
 begin
   Result:=true;
 end;
@@ -118,7 +123,7 @@ function XInputGetState(
     out pState: TXInputState //Receives the current state
  ): DWORD; stdcall;
 var
-  keys:DWORD;
+  keys: DWORD;
 begin
   pState.Gamepad.bRightTrigger:=0;
   pState.Gamepad.bLeftTrigger:=0;
@@ -136,6 +141,7 @@ begin
   //“ригеры мышь
   if GetAsyncKeyState(VK_LBUTTON)<>0 then pState.Gamepad.bRightTrigger:=255;
   if GetAsyncKeyState(VK_RBUTTON)<>0 then pState.Gamepad.bLeftTrigger:=255;
+
   // лик правый стик - средн€€ кнопка мыши
   if GetAsyncKeyState(VK_MBUTTON)<>0 then keys:=keys+XINPUT_GAMEPAD_RIGHT_THUMB;
   // лик левый стик - SHIFT
@@ -183,10 +189,11 @@ begin
   pState.Gamepad.wButtons:=keys;
   //SendLog('XInputGetState '+IntToStr(dwUserIndex));
 
-  if dwUserIndex=0 then Result:=ERROR_SUCCESS
-  else Result:=ERROR_DEVICE_NOT_CONNECTED;
+  if dwUserIndex = 0 then
+    Result:=ERROR_SUCCESS
+  else
+    Result:=ERROR_DEVICE_NOT_CONNECTED;
 end;
-
 
 function XInputSetState(
     dwUserIndex: DWORD;
@@ -196,11 +203,14 @@ begin
   //SendLog('XInputSetState '+IntToStr(dwUserIndex));
 
   //Temporary solution
-  //if (pVibration.wLeftMotorSpeed<>0) and (pVibration.wRightMotorSpeed<>0) then
   //Send vibration true or false to other devices
-  //SendLog('Motor L='+IntToStr(pVibration.wLeftMotorSpeed)+' R='+IntToStr(pVibration.wRightMotorSpeed)); //incorrect data
-  if dwUserIndex=0 then Result:=ERROR_SUCCESS
-  else Result:=ERROR_DEVICE_NOT_CONNECTED;
+  if (pVibration.wLeftMotorSpeed<>0) and (pVibration.wRightMotorSpeed<>0) then
+    SendLog('Motor L='+IntToStr(pVibration.wLeftMotorSpeed)+' R='+IntToStr(pVibration.wRightMotorSpeed)); //incorrect data
+
+  if dwUserIndex = 0 then
+    Result:=ERROR_SUCCESS
+  else
+    Result:=ERROR_DEVICE_NOT_CONNECTED;
 end;
 
 function XInputGetCapabilities(
@@ -210,17 +220,18 @@ function XInputGetCapabilities(
  ): DWORD; stdcall;
 begin
   //SendLog('XInputGetCapabilities '+IntToStr(dwUserIndex)+' '+IntToStr(dwFlags));
-
-  if dwUserIndex=0 then Result:=ERROR_SUCCESS
-  else Result:=ERROR_DEVICE_NOT_CONNECTED;
+  if dwUserIndex = 0 then
+    Result:=ERROR_SUCCESS
+  else
+    Result:=ERROR_DEVICE_NOT_CONNECTED;
 end;
 
 procedure XInputEnable(
     enable: BOOL     //Indicates whether xinput is enabled or disabled.
-); stdcall;
+ ); stdcall;
 begin
   //if enable then
-  //SendLog('XInputEnable true') else SendLog('XInputEnable false');
+    //SendLog('XInputEnable true') else SendLog('XInputEnable false');
 end;
 
 function XInputGetDSoundAudioDeviceGuids(
@@ -230,9 +241,10 @@ function XInputGetDSoundAudioDeviceGuids(
  ): DWORD; stdcall;
 begin
   //SendLog('XInputGetDSoundAudioDeviceGuids '+IntToStr(dwUserIndex));
-
-  if dwUserIndex=0 then Result:=ERROR_SUCCESS
-  else Result:=ERROR_DEVICE_NOT_CONNECTED;
+  if dwUserIndex = 0 then
+    Result:=ERROR_SUCCESS
+  else
+    Result:=ERROR_DEVICE_NOT_CONNECTED;
 end;
 
 function XInputGetBatteryInformation(
@@ -252,9 +264,10 @@ function XInputGetKeystroke(
  ): DWORD; stdcall;
 begin
   //SendLog('XInputGetKeystroke '+IntToStr(dwUserIndex)+' '+IntToStr(dwReserved));
-
-  if dwUserIndex=0 then Result:=ERROR_SUCCESS
-  else Result:=ERROR_DEVICE_NOT_CONNECTED;
+  if dwUserIndex = 0 then
+    Result:=ERROR_SUCCESS
+  else
+    Result:=ERROR_DEVICE_NOT_CONNECTED;
 end;
 
 function XInputGetStateEx(
@@ -262,12 +275,13 @@ function XInputGetStateEx(
     out pState: TXInputState
  ): DWORD; stdcall;
 var
-  keys:DWORD;
+  keys: DWORD;
 begin
   //SendLog('XInputGetStateEx '+IntToStr(dwUserIndex));
-
-  if dwUserIndex=0 then result:=ERROR_SUCCESS
-  else result:=ERROR_DEVICE_NOT_CONNECTED;
+  if dwUserIndex = 0 then
+    Result:=ERROR_SUCCESS
+  else
+    Result:=ERROR_DEVICE_NOT_CONNECTED;
 end;
 
 function XInputWaitForGuideButton(
@@ -276,30 +290,33 @@ function XInputWaitForGuideButton(
     const LPVOID
  ): DWORD; stdcall;
 begin
-  //SendLog('XInputWaitForGuideButton '+IntToStr(dwUserIndex)+' '+IntToStr(dwFlags));
-
-  if dwUserIndex=0 then Result:=ERROR_SUCCESS
-  else Result:=ERROR_DEVICE_NOT_CONNECTED;
+  SendLog('XInputWaitForGuideButton '+IntToStr(dwUserIndex)+' '+IntToStr(dwFlags));
+  if dwUserIndex = 0 then
+    Result:=ERROR_SUCCESS
+  else
+    Result:=ERROR_DEVICE_NOT_CONNECTED;
 end;
 
 function XInputCancelGuideButtonWait(
     dwUserIndex: DWORD               
 ): DWORD; stdcall;
 begin
-  //SendLog('XInputCancelGuideButtonWait '+IntToStr(dwUserIndex));
-
-  if dwUserIndex=0 then Result:=ERROR_SUCCESS
-  else Result:=ERROR_DEVICE_NOT_CONNECTED;
+  SendLog('XInputCancelGuideButtonWait '+IntToStr(dwUserIndex));
+  if dwUserIndex = 0 then
+    Result:=ERROR_SUCCESS
+  else
+    Result:=ERROR_DEVICE_NOT_CONNECTED;
 end;
 
 function XInputPowerOffController(
     dwUserIndex: DWORD
 ): DWORD; stdcall;
 begin
-  //SendLog('XInputPowerOffController '+IntToStr(dwUserIndex));
-
-  if dwUserIndex=0 then Result:=ERROR_SUCCESS
-  else Result:=ERROR_DEVICE_NOT_CONNECTED;
+  SendLog('XInputPowerOffController '+IntToStr(dwUserIndex));
+  if dwUserIndex = 0 then
+    Result:=ERROR_SUCCESS
+  else
+    Result:=ERROR_DEVICE_NOT_CONNECTED;
 end;
 
 exports
