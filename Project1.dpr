@@ -6,7 +6,7 @@ https://r57zone.github.io
 }
 
 uses
-  Windows, Messages, SysUtils, Forms;
+  Windows;//, Messages, SysUtils, Forms;
 
 {$R *.res}
 
@@ -103,15 +103,15 @@ const
   TXInputKeystroke = _XINPUT_KEYSTROKE;
 
 //Example https://github.com/r57zone/Standard-modular-program
-function SendLog(str:string): boolean;
+{function SendLog(str:string): boolean;
 var
   CDS: TCopyDataStruct;
 begin
   CDS.dwData:=0;
   CDS.cbData:=(length(str)+ 1)*sizeof(char);
   CDS.lpData:=PChar(str);
-  SendMessage(FindWindow(nil, 'Show Xinput'), WM_COPYDATA, Integer(Application.Handle), Integer(@CDS));
-end;
+  //SendMessage(FindWindow(nil, 'Show Xinput'), WM_COPYDATA, Integer(Application.Handle), Integer(@CDS));
+end;}
 
 function DllMain(Inst: LongWord; Reason: DWORD; const Reserved): boolean;
 begin
@@ -204,8 +204,8 @@ begin
 
   //Temporary solution
   //Send vibration true or false to other devices
-  if (pVibration.wLeftMotorSpeed<>0) and (pVibration.wRightMotorSpeed<>0) then
-    SendLog('Motor L='+IntToStr(pVibration.wLeftMotorSpeed)+' R='+IntToStr(pVibration.wRightMotorSpeed)); //incorrect data
+  //if (pVibration.wLeftMotorSpeed<>0) and (pVibration.wRightMotorSpeed<>0) then
+    //SendLog('Motor L='+IntToStr(pVibration.wLeftMotorSpeed)+' R='+IntToStr(pVibration.wRightMotorSpeed)); //incorrect data
 
   if dwUserIndex = 0 then
     Result:=ERROR_SUCCESS
@@ -290,7 +290,7 @@ function XInputWaitForGuideButton(
     const LPVOID
  ): DWORD; stdcall;
 begin
-  SendLog('XInputWaitForGuideButton '+IntToStr(dwUserIndex)+' '+IntToStr(dwFlags));
+  //SendLog('XInputWaitForGuideButton '+IntToStr(dwUserIndex)+' '+IntToStr(dwFlags));
   if dwUserIndex = 0 then
     Result:=ERROR_SUCCESS
   else
@@ -301,7 +301,7 @@ function XInputCancelGuideButtonWait(
     dwUserIndex: DWORD               
 ): DWORD; stdcall;
 begin
-  SendLog('XInputCancelGuideButtonWait '+IntToStr(dwUserIndex));
+  //SendLog('XInputCancelGuideButtonWait '+IntToStr(dwUserIndex));
   if dwUserIndex = 0 then
     Result:=ERROR_SUCCESS
   else
@@ -312,7 +312,7 @@ function XInputPowerOffController(
     dwUserIndex: DWORD
 ): DWORD; stdcall;
 begin
-  SendLog('XInputPowerOffController '+IntToStr(dwUserIndex));
+  //SendLog('XInputPowerOffController '+IntToStr(dwUserIndex));
   if dwUserIndex = 0 then
     Result:=ERROR_SUCCESS
   else
