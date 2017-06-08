@@ -66,8 +66,8 @@ const
 
   PXInputVibration = ^TXInputVibration;
   _XINPUT_VIBRATION = record
-    wLeftMotorSpeed:  word; //incorrect data
-    wRightMotorSpeed: word; //incorrect data
+    wLeftMotorSpeed:  word;
+    wRightMotorSpeed: word;
   end;
   XINPUT_VIBRATION = _XINPUT_VIBRATION;
   TXInputVibration = _XINPUT_VIBRATION;
