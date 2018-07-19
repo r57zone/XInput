@@ -1,5 +1,5 @@
 <h2>RU:</h2>
-Библиотека для эмуляции XInput, написанная на Delphi, позволяющая управлять игрой с любого устройства, притворяясь Xbox контроллером. 
+Библиотека для эмуляции XInput, позволяющая управлять игрой с любого устройства, притворяясь Xbox контроллером. 
 <br><br>
 Например, можно подключить старый геймпад или любой другой контроллер, а также сделать самодельный геймпад из Arduino.
 Также с помощью библиотеки можно перехватить вибрацию.
@@ -13,7 +13,7 @@
 <li>xinput9_1_0.dll</li>
 </ul>
 <h2>EN:</h2>
-XInput emulation library, written on Delphi, which allows to control the game from any device pretending Xbox controller.
+XInput emulation library, which allows to control the game from any device pretending Xbox controller.
 <br><br>
 For example, you can connect the old game pad or any other controller, and make a homemade gamepad from Arduino.
 Also can be used to intercept the vibration of the library.
