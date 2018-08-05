@@ -1,3 +1,4 @@
+// dllmain.cpp: определяет точку входа для приложения DLL.
 #include "stdafx.h"
 
 #define XINPUT_GAMEPAD_DPAD_UP          0x0001
