@@ -254,7 +254,10 @@ function XInputGetBatteryInformation(
  ): DWORD; stdcall;
 begin
   //SendLog('XInputGetBatteryInformation '+IntToStr(dwUserIndex)+' '+IntToStr(devType));
-  Result:=BATTERY_TYPE_DISCONNECTED;
+  if dwUserIndex = 0 then
+    Result:=ERROR_SUCCESS
+  else
+    Result:=ERROR_DEVICE_NOT_CONNECTED;
 end;
 
 function XInputGetKeystroke(
