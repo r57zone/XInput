@@ -12,20 +12,20 @@ uses
 
 const
   // Constants for gamepad buttons
-  XINPUT_GAMEPAD_DPAD_UP          = 1;
-  XINPUT_GAMEPAD_DPAD_DOWN        = 2;
-  XINPUT_GAMEPAD_DPAD_LEFT        = 4;
-  XINPUT_GAMEPAD_DPAD_RIGHT       = 8;
-  XINPUT_GAMEPAD_START            = 16;
-  XINPUT_GAMEPAD_BACK             = 32;
-  XINPUT_GAMEPAD_LEFT_THUMB       = 64;
-  XINPUT_GAMEPAD_RIGHT_THUMB      = 128;
-  XINPUT_GAMEPAD_LEFT_SHOULDER    = 256;
-  XINPUT_GAMEPAD_RIGHT_SHOULDER   = 512;
-  XINPUT_GAMEPAD_A                = 4096;
-  XINPUT_GAMEPAD_B                = 8192;
-  XINPUT_GAMEPAD_X                = 16384;
-  XINPUT_GAMEPAD_Y                = 32768;
+  XINPUT_GAMEPAD_DPAD_UP          = $0001;
+  XINPUT_GAMEPAD_DPAD_DOWN        = $0002;
+  XINPUT_GAMEPAD_DPAD_LEFT        = $0004;
+  XINPUT_GAMEPAD_DPAD_RIGHT       = $0008;
+  XINPUT_GAMEPAD_START            = $0010;
+  XINPUT_GAMEPAD_BACK             = $0020;
+  XINPUT_GAMEPAD_LEFT_THUMB       = $0040;
+  XINPUT_GAMEPAD_RIGHT_THUMB      = $0080;
+  XINPUT_GAMEPAD_LEFT_SHOULDER    = $0100;
+  XINPUT_GAMEPAD_RIGHT_SHOULDER   = $0200;
+  XINPUT_GAMEPAD_A                = $1000;
+  XINPUT_GAMEPAD_B                = $2000;
+  XINPUT_GAMEPAD_X                = $4000;
+  XINPUT_GAMEPAD_Y                = $8000;
 
   //Flags for battery status level
   BATTERY_TYPE_DISCONNECTED       = $00;
@@ -131,62 +131,48 @@ begin
   pState.Gamepad.sThumbLY:=0;
   pState.Gamepad.sThumbRX:=0;
   pState.Gamepad.sThumbRY:=0;
-  keys:=0;
+  pState.Gamepad.wButtons:=0;
 
-  if GetAsyncKeyState(VK_SPACE)<>0 then keys:=keys+XINPUT_GAMEPAD_A;
-  if GetAsyncKeyState(69)<>0 then keys:=keys+XINPUT_GAMEPAD_X; //E
-  if GetAsyncKeyState(81)<>0 then keys:=keys+XINPUT_GAMEPAD_Y; //Q
-  if GetAsyncKeyState(17)<>0 then keys:=keys+XINPUT_GAMEPAD_B; //CTRL
+  if GetAsyncKeyState(VK_SPACE) <> 0 then pState.Gamepad.wButtons:=pState.Gamepad.wButtons or XINPUT_GAMEPAD_A;
+  if GetAsyncKeyState(69) <> 0 then pState.Gamepad.wButtons := pState.Gamepad.wButtons or XINPUT_GAMEPAD_X; //E
+  if GetAsyncKeyState(81) <> 0 then pState.Gamepad.wButtons := pState.Gamepad.wButtons or XINPUT_GAMEPAD_Y; //Q
+  if GetAsyncKeyState(17) <> 0 then pState.Gamepad.wButtons := pState.Gamepad.wButtons or XINPUT_GAMEPAD_B; //CTRL
 
   //Тригеры мышь
-  if GetAsyncKeyState(VK_LBUTTON)<>0 then pState.Gamepad.bRightTrigger:=255;
-  if GetAsyncKeyState(VK_RBUTTON)<>0 then pState.Gamepad.bLeftTrigger:=255;
+  if GetAsyncKeyState(VK_LBUTTON) <> 0 then pState.Gamepad.bRightTrigger:=255;
+  if GetAsyncKeyState(VK_RBUTTON) <> 0 then pState.Gamepad.bLeftTrigger:=255;
 
   //Клик правый стик - средняя кнопка мыши
-  if GetAsyncKeyState(VK_MBUTTON)<>0 then keys:=keys+XINPUT_GAMEPAD_RIGHT_THUMB;
+  if GetAsyncKeyState(VK_MBUTTON) <> 0 then pState.Gamepad.wButtons := pState.Gamepad.wButtons or XINPUT_GAMEPAD_RIGHT_THUMB;
   //Клик левый стик - SHIFT
-  if GetAsyncKeyState(VK_LSHIFT)<>0 then keys:=keys+XINPUT_GAMEPAD_LEFT_THUMB;
+  if GetAsyncKeyState(VK_LSHIFT) <> 0 then pState.Gamepad.wButtons := pState.Gamepad.wButtons or XINPUT_GAMEPAD_LEFT_THUMB;
 
   //Левый бампер, 1
-  if GetAsyncKeyState(49)<>0 then keys:=keys+XINPUT_GAMEPAD_LEFT_SHOULDER;
+  if GetAsyncKeyState(49) <> 0 then pState.Gamepad.wButtons := pState.Gamepad.wButtons or XINPUT_GAMEPAD_LEFT_SHOULDER;
   //Правый бампер, 2
-  if GetAsyncKeyState(50)<>0 then keys:=keys+XINPUT_GAMEPAD_RIGHT_SHOULDER;
+  if GetAsyncKeyState(50) <> 0 then pState.Gamepad.wButtons := pState.Gamepad.wButtons or XINPUT_GAMEPAD_RIGHT_SHOULDER;
 
   //Back, s
-  if GetAsyncKeyState(VK_ESCAPE)<>0 then keys:=keys+XINPUT_GAMEPAD_BACK;
+  if GetAsyncKeyState(VK_ESCAPE) <> 0 then pState.Gamepad.wButtons := pState.Gamepad.wButtons or XINPUT_GAMEPAD_BACK;
   //Start
-  if GetAsyncKeyState(VK_RETURN)<>0 then keys:=keys+XINPUT_GAMEPAD_START;
+  if GetAsyncKeyState(VK_RETURN) <> 0 then pState.Gamepad.wButtons := pState.Gamepad.wButtons or XINPUT_GAMEPAD_START;
 
-  //Вверх
-  if GetAsyncKeyState(38)<>0 then keys:=keys+XINPUT_GAMEPAD_DPAD_UP;
-  //Вниз
-  if GetAsyncKeyState(40)<>0 then keys:=keys+XINPUT_GAMEPAD_DPAD_DOWN;
-  //Влево
-  if GetAsyncKeyState(37)<>0 then keys:=keys+XINPUT_GAMEPAD_DPAD_LEFT;
-  //Вправо
-  if GetAsyncKeyState(39)<>0 then keys:=keys+XINPUT_GAMEPAD_DPAD_RIGHT;
+  if GetAsyncKeyState(VK_UP) <> 0 then pState.Gamepad.wButtons := pState.Gamepad.wButtons or XINPUT_GAMEPAD_DPAD_UP;
+  if GetAsyncKeyState(VK_DOWN) <> 0 then pState.Gamepad.wButtons := pState.Gamepad.wButtons or XINPUT_GAMEPAD_DPAD_DOWN;
+  if GetAsyncKeyState(VK_LEFT) <> 0 then pState.Gamepad.wButtons := pState.Gamepad.wButtons or XINPUT_GAMEPAD_DPAD_LEFT;
+  if GetAsyncKeyState(VK_RIGHT) <> 0 then pState.Gamepad.wButtons := pState.Gamepad.wButtons or XINPUT_GAMEPAD_DPAD_RIGHT;
 
-  //Левый стик вверх
-  if GetAsyncKeyState(87)<>0 then pState.Gamepad.sThumbLY:=32767;
-  //Левый стик вниз
-  if GetAsyncKeyState(83)<>0 then pState.Gamepad.sThumbLY:=-32768;
-  //Левый стик влево
-  if GetAsyncKeyState(65)<>0 then pState.Gamepad.sThumbLX:=-32768;
-  //Левый стик вправо
-  if GetAsyncKeyState(68)<>0 then pState.Gamepad.sThumbLX:=32767;
+  if GetAsyncKeyState(ord('W')) <> 0 then pState.Gamepad.sThumbLY:=32767;
+  if GetAsyncKeyState(ord('S')) <> 0 then pState.Gamepad.sThumbLY:=-32768;
+  if GetAsyncKeyState(ord('A')) <> 0 then pState.Gamepad.sThumbLX:=-32768;
+  if GetAsyncKeyState(ord('D')) <> 0 then pState.Gamepad.sThumbLX:=32767;
 
-
-  //Правый стик вверх
-  if GetAsyncKeyState(VK_NUMPAD8)<>0 then pState.Gamepad.sThumbRY:=32767;
-  //Правый стик вниз
-  if GetAsyncKeyState(VK_NUMPAD2)<>0 then pState.Gamepad.sThumbRY:=-32768;
-  //Правый стик влево
-  if GetAsyncKeyState(VK_NUMPAD4)<>0 then pState.Gamepad.sThumbRX:=-32768;
-  //Правый стик вправо
-  if GetAsyncKeyState(VK_NUMPAD6)<>0 then pState.Gamepad.sThumbRX:=32767;
+  if GetAsyncKeyState(VK_NUMPAD8) <> 0 then pState.Gamepad.sThumbRY:=32767;
+  if GetAsyncKeyState(VK_NUMPAD2) <> 0 then pState.Gamepad.sThumbRY:=-32768;
+  if GetAsyncKeyState(VK_NUMPAD4) <> 0 then pState.Gamepad.sThumbRX:=-32768;
+  if GetAsyncKeyState(VK_NUMPAD6) <> 0 then pState.Gamepad.sThumbRX:=32767;
 
   pState.dwPacketNumber:=GetTickCount;
-  pState.Gamepad.wButtons:=keys;
   //SendLog('XInputGetState '+IntToStr(dwUserIndex));
 
   if dwUserIndex = 0 then
@@ -202,9 +188,8 @@ function XInputSetState(
 begin
   //SendLog('XInputSetState '+IntToStr(dwUserIndex));
 
-  //Temporary solution
   //Send vibration true or false to other devices
-  //if (pVibration.wLeftMotorSpeed<>0) and (pVibration.wRightMotorSpeed<>0) then
+  //if (pVibration.wLeftMotorSpeed <> 0) and (pVibration.wRightMotorSpeed <> 0) then
     //SendLog('Motor L='+IntToStr(pVibration.wLeftMotorSpeed)+' R='+IntToStr(pVibration.wRightMotorSpeed)); //incorrect data
 
   if dwUserIndex = 0 then

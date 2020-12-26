@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include <windows.h>
 
 #define XINPUT_GAMEPAD_DPAD_UP          0x0001
 #define XINPUT_GAMEPAD_DPAD_DOWN        0x0002
@@ -23,9 +23,6 @@
 #define ERROR_DEVICE_NOT_CONNECTED		1167
 #define ERROR_SUCCESS					0
 
-//
-// Structures used by XInput APIs
-//
 typedef struct _XINPUT_GAMEPAD
 {
 	WORD                                wButtons;
@@ -75,10 +72,10 @@ typedef struct _XINPUT_KEYSTROKE
 
 #define DLLEXPORT extern "C" __declspec(dllexport)
 
-DLLEXPORT BOOL APIENTRY DllMain( HMODULE hModule,
-                       DWORD  ul_reason_for_call,
-                       LPVOID lpReserved
-					 )
+DLLEXPORT BOOL APIENTRY DllMain(HMODULE hModule,
+	DWORD  ul_reason_for_call,
+	LPVOID lpReserved
+)
 {
 	/*switch (ul_reason_for_call)
 	{
@@ -93,41 +90,40 @@ DLLEXPORT BOOL APIENTRY DllMain( HMODULE hModule,
 
 DLLEXPORT DWORD WINAPI XInputGetState(_In_ DWORD dwUserIndex, _Out_ XINPUT_STATE *pState)
 {
-	DWORD keys = 0;
-
 	pState->Gamepad.bRightTrigger = 0;
 	pState->Gamepad.bLeftTrigger = 0;
 	pState->Gamepad.sThumbLX = 0;
 	pState->Gamepad.sThumbLY = 0;
 	pState->Gamepad.sThumbRX = 0;
 	pState->Gamepad.sThumbRY = 0;
+	pState->Gamepad.wButtons = 0;
 
-	if ((GetAsyncKeyState(VK_SPACE) & 0x8000) != 0) keys += XINPUT_GAMEPAD_A;
-	if ((GetAsyncKeyState(69) & 0x8000) != 0) keys += XINPUT_GAMEPAD_X; //E
-	if ((GetAsyncKeyState(81) & 0x8000) != 0) keys += XINPUT_GAMEPAD_Y;	//Q
-	if ((GetAsyncKeyState(17) & 0x8000) != 0) keys += XINPUT_GAMEPAD_B;	//CTRL
+	if ((GetAsyncKeyState(VK_SPACE) & 0x8000) != 0) pState->Gamepad.wButtons |= XINPUT_GAMEPAD_A;
+	if ((GetAsyncKeyState('E') & 0x8000) != 0) pState->Gamepad.wButtons |= XINPUT_GAMEPAD_X;
+	if ((GetAsyncKeyState('Q') & 0x8000) != 0) pState->Gamepad.wButtons |= XINPUT_GAMEPAD_Y;
+	if ((GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0) pState->Gamepad.wButtons |= XINPUT_GAMEPAD_B;
 
-	if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0) pState->Gamepad.bLeftTrigger = 255;
-	if ((GetAsyncKeyState(VK_RBUTTON) & 0x8000) != 0) pState->Gamepad.bRightTrigger = 255;
+	if ((GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0) pState->Gamepad.bRightTrigger = 255; 
+	if ((GetAsyncKeyState(VK_RBUTTON) & 0x8000) != 0) pState->Gamepad.bLeftTrigger = 255;
 
-	if ((GetAsyncKeyState(VK_MBUTTON) & 0x8000) != 0) keys += XINPUT_GAMEPAD_RIGHT_THUMB;	
+	if ((GetAsyncKeyState(VK_MBUTTON) & 0x8000) != 0) pState->Gamepad.wButtons |= XINPUT_GAMEPAD_RIGHT_THUMB;
 
-	if ((GetAsyncKeyState(VK_LSHIFT) & 0x8000) != 0) keys += XINPUT_GAMEPAD_LEFT_THUMB;	
-	if ((GetAsyncKeyState(49) & 0x8000) != 0) keys += XINPUT_GAMEPAD_LEFT_SHOULDER;
-	if ((GetAsyncKeyState(50) & 0x8000) != 0) keys += XINPUT_GAMEPAD_RIGHT_SHOULDER;
+	if ((GetAsyncKeyState(VK_LSHIFT) & 0x8000) != 0) pState->Gamepad.wButtons |= XINPUT_GAMEPAD_LEFT_THUMB;
+	if ((GetAsyncKeyState('1') & 0x8000) != 0) pState->Gamepad.wButtons |= XINPUT_GAMEPAD_LEFT_SHOULDER;
+	if ((GetAsyncKeyState('2') & 0x8000) != 0) pState->Gamepad.wButtons |= XINPUT_GAMEPAD_RIGHT_SHOULDER;
 
-	if ((GetAsyncKeyState(VK_ESCAPE) & 0x8000) != 0) keys += XINPUT_GAMEPAD_BACK;
-	if ((GetAsyncKeyState(VK_RETURN) & 0x8000) != 0) keys += XINPUT_GAMEPAD_START;
-	
-	if ((GetAsyncKeyState(38) & 0x8000) != 0) keys += XINPUT_GAMEPAD_DPAD_UP;
-	if ((GetAsyncKeyState(40) & 0x8000) != 0) keys += XINPUT_GAMEPAD_DPAD_DOWN;
-	if ((GetAsyncKeyState(37) & 0x8000) != 0) keys += XINPUT_GAMEPAD_DPAD_LEFT;
-	if ((GetAsyncKeyState(39) & 0x8000) != 0) keys += XINPUT_GAMEPAD_DPAD_RIGHT;
-	
-	if ((GetAsyncKeyState(87) & 0x8000) != 0) pState->Gamepad.sThumbLY = 32767;
-	if ((GetAsyncKeyState(83) & 0x8000) != 0) pState->Gamepad.sThumbLY = -32768;
-	if ((GetAsyncKeyState(65) & 0x8000) != 0) pState->Gamepad.sThumbLX = -32768;
-	if ((GetAsyncKeyState(68) & 0x8000) != 0) pState->Gamepad.sThumbLX = 32767;
+	if ((GetAsyncKeyState(VK_ESCAPE) & 0x8000) != 0) pState->Gamepad.wButtons |= XINPUT_GAMEPAD_BACK;
+	if ((GetAsyncKeyState(VK_RETURN) & 0x8000) != 0) pState->Gamepad.wButtons |= XINPUT_GAMEPAD_START;
+
+	if ((GetAsyncKeyState(VK_UP) & 0x8000) != 0) pState->Gamepad.wButtons |= XINPUT_GAMEPAD_DPAD_UP;
+	if ((GetAsyncKeyState(VK_DOWN) & 0x8000) != 0) pState->Gamepad.wButtons |= XINPUT_GAMEPAD_DPAD_DOWN;
+	if ((GetAsyncKeyState(VK_LEFT) & 0x8000) != 0) pState->Gamepad.wButtons |= XINPUT_GAMEPAD_DPAD_LEFT;
+	if ((GetAsyncKeyState(VK_RIGHT) & 0x8000) != 0) pState->Gamepad.wButtons |= XINPUT_GAMEPAD_DPAD_RIGHT;
+
+	if ((GetAsyncKeyState('W') & 0x8000) != 0) pState->Gamepad.sThumbLY = 32767;
+	if ((GetAsyncKeyState('S') & 0x8000) != 0) pState->Gamepad.sThumbLY = -32768;
+	if ((GetAsyncKeyState('A') & 0x8000) != 0) pState->Gamepad.sThumbLX = -32768;
+	if ((GetAsyncKeyState('D') & 0x8000) != 0) pState->Gamepad.sThumbLX = 32767;
 
 	if ((GetAsyncKeyState(VK_NUMPAD8) & 0x8000) != 0) pState->Gamepad.sThumbRY = 32767;
 	if ((GetAsyncKeyState(VK_NUMPAD2) & 0x8000) != 0) pState->Gamepad.sThumbRY = -32768;
@@ -135,39 +131,31 @@ DLLEXPORT DWORD WINAPI XInputGetState(_In_ DWORD dwUserIndex, _Out_ XINPUT_STATE
 	if ((GetAsyncKeyState(VK_NUMPAD6) & 0x8000) != 0) pState->Gamepad.sThumbRX = 32767;
 
 	pState->dwPacketNumber = GetTickCount();
-	pState->Gamepad.wButtons = keys;
 
-	if (dwUserIndex == 0) {
+	if (dwUserIndex == 0)
 		return ERROR_SUCCESS;
-	}
 	else
-	{
 		return ERROR_DEVICE_NOT_CONNECTED;
-	}
-		
 }
 
-DLLEXPORT DWORD WINAPI XInputSetState(_In_ DWORD dwUserIndex, _In_ XINPUT_VIBRATION *pVibration) 
+DLLEXPORT DWORD WINAPI XInputSetState(_In_ DWORD dwUserIndex, _In_ XINPUT_VIBRATION *pVibration)
 {
-	if (dwUserIndex == 0) {
+	//pVibration->wLeftMotorSpeed
+	//pVibration->wRightMotorSpeed
+
+	if (dwUserIndex == 0)
 		return ERROR_SUCCESS;
-	}
 	else
-	{
 		return ERROR_DEVICE_NOT_CONNECTED;
-	}
 }
 
 
-DLLEXPORT DWORD WINAPI XInputGetCapabilities(_In_ DWORD dwUserIndex, _In_ DWORD dwFlags, _Out_ XINPUT_CAPABILITIES *pCapabilities) 
+DLLEXPORT DWORD WINAPI XInputGetCapabilities(_In_ DWORD dwUserIndex, _In_ DWORD dwFlags, _Out_ XINPUT_CAPABILITIES *pCapabilities)
 {
-	if (dwUserIndex == 0) {
+	if (dwUserIndex == 0)
 		return ERROR_SUCCESS;
-	}
 	else
-	{
 		return ERROR_DEVICE_NOT_CONNECTED;
-	}
 }
 
 DLLEXPORT void WINAPI XInputEnable(_In_ BOOL enable)
@@ -177,77 +165,56 @@ DLLEXPORT void WINAPI XInputEnable(_In_ BOOL enable)
 
 DLLEXPORT DWORD WINAPI XInputGetDSoundAudioDeviceGuids(DWORD dwUserIndex, GUID* pDSoundRenderGuid, GUID* pDSoundCaptureGuid)
 {
-	if (dwUserIndex == 0) {
+	if (dwUserIndex == 0)
 		return ERROR_SUCCESS;
-	}
 	else
-	{
 		return ERROR_DEVICE_NOT_CONNECTED;
-	}
 }
 
 DLLEXPORT DWORD WINAPI XInputGetBatteryInformation(_In_ DWORD dwUserIndex, _In_ BYTE devType, _Out_ XINPUT_BATTERY_INFORMATION *pBatteryInformation)
 {
-	if (dwUserIndex == 0) {
+	if (dwUserIndex == 0)
 		return ERROR_SUCCESS;
-	}
 	else
-	{
 		return ERROR_DEVICE_NOT_CONNECTED;
-	}
 }
 
 DLLEXPORT DWORD WINAPI XInputGetKeystroke(DWORD dwUserIndex, DWORD dwReserved, PXINPUT_KEYSTROKE pKeystroke)
 {
-	if (dwUserIndex == 0) {
+	if (dwUserIndex == 0)
 		return ERROR_SUCCESS;
-	}
 	else
-	{
 		return ERROR_DEVICE_NOT_CONNECTED;
-	}
 }
 
 DLLEXPORT DWORD WINAPI XInputGetStateEx(_In_ DWORD dwUserIndex, _Out_ XINPUT_STATE *pState)
 {
-	if (dwUserIndex == 0) {
+	if (dwUserIndex == 0)
 		return ERROR_SUCCESS;
-	}
 	else
-	{
 		return ERROR_DEVICE_NOT_CONNECTED;
-	}
 }
 
 DLLEXPORT DWORD WINAPI XInputWaitForGuideButton(_In_ DWORD dwUserIndex, _In_ DWORD dwFlag, _In_ LPVOID pVoid)
 {
-	if (dwUserIndex == 0) {
+	if (dwUserIndex == 0)
 		return ERROR_SUCCESS;
-	}
 	else
-	{
 		return ERROR_DEVICE_NOT_CONNECTED;
-	}
 }
 
 DLLEXPORT DWORD XInputCancelGuideButtonWait(_In_ DWORD dwUserIndex)
 {
-	if (dwUserIndex == 0) {
+	if (dwUserIndex == 0)
 		return ERROR_SUCCESS;
-	}
 	else
-	{
 		return ERROR_DEVICE_NOT_CONNECTED;
-	}
 }
 
 DLLEXPORT DWORD XInputPowerOffController(_In_ DWORD dwUserIndex)
 {
-	if (dwUserIndex == 0) {
+	if (dwUserIndex == 0)
 		return ERROR_SUCCESS;
-	}
 	else
-	{
 		return ERROR_DEVICE_NOT_CONNECTED;
-	}
 }
